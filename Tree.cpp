@@ -51,6 +51,39 @@ Tree * Tree::copy() const {
 
 // class CycleTree: public Tree
 
-// class MaxRankTree: public Tree
+//DEFAULT CONSTRUCTOR
+CycleTree::CycleTree(int rootLabel, int currCycle)
+:Tree(rootLabel) {
+    //    return *this;
+}
 
+//COPY CONSTRUCTOR
+CycleTree::CycleTree(const CycleTree &cycleTreeToCopy)
+:Tree(cycleTreeToCopy){
+    //return *this;
+}
+
+//COPY ASSIGNMENT OPERATOR
+CycleTree & CycleTree::operator=(const CycleTree &cycleTreeToCopy) {
+
+}
+//DESTRUCTOR
+CycleTree::~CycleTree() noexcept {
+
+}
+
+
+
+Tree * CycleTree::clone() {
+    CycleTree temp = new CycleTree(this->node,currCycle); //todo
+            int i= this.
+}
+
+// class MaxRankTree: public Tree
+Tree * MaxRankTree::clone() {
+
+}
 // class RootTree: public Tree
+Tree * RootTree::clone() {
+
+}
