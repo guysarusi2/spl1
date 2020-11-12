@@ -4,42 +4,34 @@
 
 #include "Graph.h"
 
+//todo delete unnecessary CTRS
+
+
 //DEFAULT CONSTRUCTOR
 Graph::Graph(std::vector<std::vector<int>> matrix) : edges(matrix), infectedNodes(matrix.size(), false) {
-    //todo delete
-
-//        edges =  std::vector<std::vector<int>>(matrix.size());
-//        for (int i = 0; i < matrix.size(); ++i) {
-//            for (int j = 0; j < matrix[i].size(); ++j) {
-//                edges[i].push_back(matrix[i][j]);
-//            }
-//        }
-//        for (int j = 0; j < edges.size(); ++j) {
-//                infectedNodes.push_back(false);
-//        }
 }
 
-
+//todo delete
 //COPY CONSTRUCTOR
-Graph::Graph(const Graph &graphToCopy) {
-    edges = graphToCopy.edges;
-    infectedNodes = graphToCopy.infectedNodes;
-}
+//Graph::Graph(const Graph &graphToCopy) {
+//    edges = graphToCopy.edges;
+//    infectedNodes = graphToCopy.infectedNodes;
+//}
 
 //COPY ASSIGNMENT OPERATOR
-Graph &Graph::operator=(const Graph &graphToCopy) {
-    if (this == &graphToCopy)
-        return *this;
-    clear();
-    edges = graphToCopy.edges;
-    infectedNodes = graphToCopy.infectedNodes;
-    return *this;
-}
+//Graph &Graph::operator=(const Graph &graphToCopy) {
+//    if (this == &graphToCopy)
+//        return *this;
+//    clear();
+//    edges = graphToCopy.edges;
+//    infectedNodes = graphToCopy.infectedNodes;
+//    return *this;
+//}
 
 //DESTRUCTOR
-Graph::~Graph() {
-    clear();
-}
+//Graph::~Graph() {
+//    clear();
+//}
 
 void Graph::infectNode(int nodeInd) {
     infectedNodes[nodeInd] = true;
@@ -56,6 +48,43 @@ void Graph::isolate(int nodeInd) {
     }
 }
 
+//todo delete
+//int Graph::searchVirusFree(int nodeInd) {
+//    //const std::vector<int>& neighbors(getNeighbors(nodeInd));
+//    const std::vector<int> &neighbors(edges[nodeInd]);
+//    for (int i = 0; i < neighbors.size(); ++i) {
+//        if (!infectedNodes[neighbors[i]])
+//            return i;
+//    }
+//    return -1;
+//}
+
+//todo return vector?
+std::vector<int> Graph::getNeighbors(int nodeInd) {
+    const std::vector<int> &nodeVector(edges[nodeInd]);
+    std::vector<int> neighbors;
+    for (int i = 0; i < nodeVector.size(); ++i) {
+        if (nodeVector[i] == 1)
+            neighbors.push_back(i);
+    }
+    return neighbors;
+}
+
+int Graph::getSize() { return edges.size(); }
+
+const std::vector<std::vector<int>> &Graph::getEdges() {
+    std::vector<std::vector<int>> &tmpEdges = edges;
+    return tmpEdges;
+}
+
+const std::vector<int> Graph::getInfected() {
+    std::vector<int> infected;
+    for (int i = 0; i < infectedNodes.size(); ++i) {
+        if (infectedNodes[i])
+            infected.push_back(i);
+    }
+    return infected;
+}
 
 void Graph::print() {
     std::cout << "graph:" << std::endl;
@@ -78,3 +107,27 @@ void Graph::clear() {
     infectedNodes.clear();
 }
 
+Tree *Graph::bfs(const Session &session, int rootInd) {
+    Tree *root = Tree::createTree(session, rootInd);
+    std::vector<bool> visited(edges.size(), false);
+    visited[rootInd] = true;
+    std::queue<Tree *> treesQueue;
+    treesQueue.push(root);
+    while ((!treesQueue.empty())) {
+        Tree *current(treesQueue.front());
+        treesQueue.pop();   //todo maybe need to delete queue.front before pop
+        std::vector<int> neighbors(getNeighbors(current->getNode()));
+        for (int i = 0; i < neighbors.size(); ++i) {
+            int nextNeighbor(neighbors[i]);
+            if (!visited[nextNeighbor]) {
+                Tree *newChild = Tree::createTree(session, nextNeighbor);
+                current->addChild(*newChild);
+                visited[nextNeighbor] = true;
+                treesQueue.push(newChild);
+            }
+        }
+        //todo deleting the tree itself is it good? or maybe it is ok since we copy it to the tree
+        //delete current;
+    }
+    return root;
+}
